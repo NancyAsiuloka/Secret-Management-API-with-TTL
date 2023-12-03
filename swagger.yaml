@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: Secret Manager API
+  description: APIs for managing secrets with time-to-live (TTL)
+  version: 1.0.0
+
+paths:
+  /api/secrets:
+    post:
+      summary: Store a secret with a TTL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  description: Unique identifier for the secret
+                value:
+                  type: string
+                  description: The confidential message or data
+                ttlInSeconds:
+                  type: integer
+                  description: Time-to-Live in seconds
+      responses:
+        '200':
+          description: Secret stored successfully
+        '500':
+          description: Internal Server Error
+
+  /api/secrets/{key}:
+    get:
+      summary: Retrieve a secret by key
+      parameters:
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+          description: The unique identifier for the secret
+      responses:
+        '200':
+          description: Secret retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: string
+                    description: The confidential message or data
+        '404':
+          description: Secret not found or has expired
+        '500':
+          description: Internal Server Error
